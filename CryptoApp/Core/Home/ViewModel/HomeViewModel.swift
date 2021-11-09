@@ -5,11 +5,27 @@ class HomeViewModel: ObservableObject {
     
     @Published var allCoins: [CoinModel] = []
     @Published var portfolioCoins: [CoinModel] = []
+    @Published var allCoinError: Error? = nil
+
+    private let dataServices = CoinDataService()
+    private var cancellable = Set<AnyCancellable>()
 
     init() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.allCoins.append(DevPreviewProvider.instance.coin)
-            self?.portfolioCoins.append(DevPreviewProvider.instance.coin)
-        }
+       addSubscribers()
     }
+
+    func addSubscribers(){
+        dataServices.$allCoins
+        .sink { [weak self] allCoinsReceived in
+            self?.allCoins = allCoinsReceived
+        }
+        .store(in: &cancellable)
+
+        dataServices.$allCoinError
+        .sink { [weak self] allCoinErrorReceived in
+            self?.allCoinError = allCoinErrorReceived
+        }
+        .store(in: &cancellable)
+    }
+
 }
