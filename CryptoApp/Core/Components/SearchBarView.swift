@@ -14,6 +14,7 @@ struct SearchBarView: View {
                 )
             TextField(TextConstants.searchBarTitlePlaceholder, text: $searchText)
                 .foregroundColor(Color.theme.accentColor)
+                .disableAutocorrection(true)
                 .overlay(
                     Image(systemName: IconAndImageNamesConstants.xmarkCircleFillSystemName)
                         .foregroundColor(Color.theme.accentColor)
@@ -26,6 +27,7 @@ struct SearchBarView: View {
                             : 1.0
                         )
                         .onTapGesture {
+                            UIApplication.shared.endEditing()
                             searchText = ""
                         }
                     , alignment: .trailing
