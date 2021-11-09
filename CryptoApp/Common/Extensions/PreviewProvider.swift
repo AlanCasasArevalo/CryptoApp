@@ -12,6 +12,8 @@ class DevPreviewProvider {
     static let instance = DevPreviewProvider()
     private init () {}
     
+    let homeViewModel = HomeViewModel()
+    
     let coin = CoinModel(
         id: "bitcoin",
         symbol: "btc",

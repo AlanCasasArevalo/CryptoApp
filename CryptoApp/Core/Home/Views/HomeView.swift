@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject private var viewModel: HomeViewModel
     @State private var showPortfolio = false
     
     var body: some View {
@@ -11,6 +12,18 @@ struct HomeView: View {
             
             VStack {
                 homeHeaderView
+                
+                columnTitlesView
+                
+                if !showPortfolio {
+                    allCoinListView
+                        .transition(.move(edge: .leading))
+                } else {
+                    portfolioCoinListView
+                        .transition(.move(edge: .trailing))
+
+                }
+                
                 Spacer(minLength: 0)
             }
         }
@@ -25,6 +38,7 @@ struct HomeView_Previews: PreviewProvider {
                     .preferredColorScheme(.light)
                     .navigationBarHidden(true)
             }
+            .environmentObject(dev.homeViewModel)
         }
     }
 }
@@ -55,4 +69,40 @@ extension HomeView {
         }
         .padding(.horizontal)
     }
+    
+    private var allCoinListView: some View {
+        List {
+            ForEach(viewModel.allCoins) { coin in
+                CoinRowView(coin: coin, showHoldingsColumn: false)
+                    .listRowInsets(.init(top: 0, leading: 8, bottom: 0, trailing: 8))
+            }
+        }
+        .listStyle(PlainListStyle())
+    }
+    
+    private var portfolioCoinListView: some View {
+        List {
+            ForEach(viewModel.portfolioCoins) { coin in
+                CoinRowView(coin: coin, showHoldingsColumn: true)
+                    .listRowInsets(.init(top: 0, leading: 8, bottom: 0, trailing: 8))
+            }
+        }
+        .listStyle(PlainListStyle())
+    }
+    
+    private var columnTitlesView: some View {
+        HStack {
+            Text(TextConstants.columnCoinHeaderTitle)
+            Spacer()
+            if showPortfolio {
+                Text(TextConstants.columnHoldingsHeaderTitle)
+            }
+            Text(TextConstants.columnPriceHeaderTitle)
+                .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
+        }
+        .font(.caption)
+        .foregroundColor(Color.theme.secondaryTextColor)
+        .padding(.horizontal)
+    }
+
 }
