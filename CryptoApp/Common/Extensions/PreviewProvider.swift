@@ -212,6 +212,6 @@ class DevPreviewProvider {
 
         ]),
         priceChangePercentage24HInCurrency: 3.305465605123893,
-        currentHoldings: 0
+        currentHoldings: 1.5
     )
 }
