@@ -6,4 +6,5 @@ struct TextConstants {
     static let columnCoinHeaderTitle = "Coin"
     static let columnHoldingsHeaderTitle = "Holdings"
     static let columnPriceHeaderTitle = "Price"
+    static let searchBarTitlePlaceholder = "Search by name or symbol ..."
 }
