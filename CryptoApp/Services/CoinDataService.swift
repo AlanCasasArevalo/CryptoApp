@@ -24,11 +24,12 @@ class CoinDataService {
         }
         .receive(on: DispatchQueue.main)
         .decode(type: [CoinModel].self, decoder: JSONDecoder())
-        .sink(receiveCompletion: { completion in
+        .sink(receiveCompletion: { [weak self] completion in
             switch completion {
             case .finished:
                 print("Finish")
             case .failure(let error):
+                self?.allCoinError = error
                 print("Finish with Error: \(error.localizedDescription)")
             }
         }, receiveValue: { [weak self] allCoinsFromBack in
