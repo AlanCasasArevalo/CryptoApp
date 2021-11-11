@@ -16,6 +16,8 @@ class HomeViewModel: ObservableObject {
     }
 
     func addSubscribers(){
+        /*
+         This function is not necesary because last one do the same combine search bar and download
         dataServices.$allCoins
         .sink { [weak self] allCoinsReceived in
             self?.allCoins = allCoinsReceived
@@ -27,6 +29,30 @@ class HomeViewModel: ObservableObject {
             self?.allCoinError = allCoinErrorReceived
         }
         .store(in: &cancellable)
+         */
+
+        $searchText
+            .combineLatest(dataServices.$allCoins)
+            .map { (text, startingCoins) -> [CoinModel] in
+                
+                guard !text.isEmpty else {
+                    return startingCoins
+                }
+                
+                let textLowercased = text.lowercased()
+                let filteredCoins = startingCoins.filter { coin in
+                    coin.symbol?.lowercased().contains(textLowercased) ?? false ||
+                    coin.name?.lowercased().contains(textLowercased) ?? false ||
+                    coin.id?.lowercased().contains(textLowercased) ?? false
+                }
+                
+                return filteredCoins
+            }
+            .sink { [weak self] allCoinsReceived in
+                self?.allCoins = allCoinsReceived
+            }
+            .store(in: &cancellable)
+
     }
 
 }
